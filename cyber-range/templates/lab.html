@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lab.name_ar }} - Cyber Range Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00d4ff;
+            --secondary-color: #7000ff;
+            --success-color: #00ff88;
+            --warning-color: #ffd700;
+            --danger-color: #ff4757;
+            --dark-bg: #0a0e27;
+            --card-bg: #151932;
+            --card-hover: #1e2442;
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --border-color: rgba(100, 255, 218, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(112, 0, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, rgba(21, 25, 50, 0.95), rgba(30, 36, 66, 0.95));
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .lab-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .lab-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow);
+        }
+        
+        .lab-type-badge {
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--shadow);
+            animation: pulse 2s infinite;
+        }
+        
+        .lab-type-badge.red {
+            background: linear-gradient(135deg, #ff4757, #ff6348);
+            border: 2px solid #ff4757;
+        }
+        
+        .lab-type-badge.blue {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: 2px solid #00d4ff;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, var(--success-color), #00cc66);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, var(--danger-color), #ff3838);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+        
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            height: calc(100vh - 90px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 420px;
+            background: linear-gradient(180deg, rgba(21, 25, 50, 0.95), rgba(15, 18, 35, 0.95));
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            right: 0;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--secondary-color));
+        }
+        
+        /* Status Box */
+        .status-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid var(--success-color);
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .status-box.loading {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            border-color: var(--warning-color);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+        }
+        
+        .status-box.error {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1), rgba(255, 56, 56, 0.1));
+            border-color: var(--danger-color);
+            box-shadow: 0 8px 32px rgba(255, 71, 87, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Objectives List */
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .objectives-list li {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(112, 0, 255, 0.05));
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-right: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .objectives-list li:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(112, 0, 255, 0.15));
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Steps List - تم إصلاح مشكلة الأرقام */
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: step-counter;
+        }
+        
+        .steps-list li {
+            padding: 15px 100px 15px 80px;  /* زيادة المسافة من اليمين */
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 153, 255, 0.05));
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary-color);
+            position: relative;
+            transition: all 0.3s ease;
+            min-height: 80px;  /* ارتفاع أدنى */
+        }
+        
+        .steps-list li::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            right: 50px;  /* بعد من الحافة اليمنى */
+            top: 20px;    /* بعد من الأعلى */
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+            flex-shrink: 0;  /* منع تقلص الرقم */
+        }
+        
+        .steps-list li:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 255, 0.15));
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+        
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        /* VM List */
+        .vm-list {
+            list-style: none;
+        }
+        
+        .vm-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .vm-item:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(112, 0, 255, 0.1));
+            border-color: var(--primary-color);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .vm-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: var(--text-primary);
+        }
+        
+        .vm-ip {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 3px 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .vm-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow);
+        }
+        
+        .vm-status.running {
+            background: linear-gradient(135deg, var(--success-color), #00cc66);
+            animation: pulse 2s infinite;
+        }
+        
+        .vm-status.stopped {
+            background: linear-gradient(135deg, #555, #777);
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .info-item {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(112, 0, 255, 0.05));
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-right: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .info-item:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(112, 0, 255, 0.15));
+            transform: translateX(-3px);
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .info-value {
+            color: var(--text-primary);
+        }
+        
+        /* Console Container */
+        .console-container {
+            flex: 1;
+            background: linear-gradient(135deg, #0a0e27, #151932);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .console-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .console-placeholder h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(112, 0, 255, 0.8)); }
+        }
+        
+        .console-placeholder p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-overlay.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(0, 212, 255, 0.2);
+            border-top: 6px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--primary-color);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 50vh;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .steps-list li {
+                padding: 15px 15px 15px 65px;
+            }
+            
+            .steps-list li::before {
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="lab-info">
+            <h1 class="lab-title">{{ lab.name_ar }}</h1>
+            <span class="lab-type-badge {{ lab.type }}">
+                {% if lab.type == 'red' %}🔴 Red Team{% else %}🔵 Blue Team{% endif %}
+            </span>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-start" onclick="startLab()">▶️ ابدأ المختبر</button>
+            <button class="btn btn-stop" onclick="stopLab()">⏹️ إيقاف</button>
+            <button class="btn btn-back" onclick="window.location.href='/'">↩️ رجوع</button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="sidebar">
+            <div id="status-container"></div>
+            
+            <div class="section">
+                <h3 class="section-title">📝 الأهداف التعليمية</h3>
+                <ul class="objectives-list">
+                    {% for objective in lab.objectives %}
+                    <li>✓ {{ objective }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">🎯 خطوات تنفيذ السيناريو</h3>
+                <ul class="steps-list">
+                    {% for step in lab.steps %}
+                    <li>
+                        <div class="step-title">{{ step.title }}</div>
+                        <div class="step-description">{{ step.description }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">💻 الأجهزة المستخدمة</h3>
+                <ul class="vm-list">
+                    {% for vm in lab.vms %}
+                    <li class="vm-item">
+                        <div>
+                            <div class="vm-name">{{ vm.name }}</div>
+                            <div class="vm-ip">{{ vm.ip }}</div>
+                        </div>
+                        <span class="vm-status stopped" id="vm-status-{{ vm.vmid }}">Stopped</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">ℹ️ معلومات المختبر</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">⏱️ المدة:</span>
+                        <span class="info-value">{{ lab.duration }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📊 المستوى:</span>
+                        <span class="info-value">{{ lab.difficulty }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🎯 نوع الهجوم:</span>
+                        <span class="info-value">{{ lab.attack_type }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="console-container">
+            <div class="loading-overlay hidden" id="loading-overlay">
+                <div class="spinner"></div>
+                <div class="loading-text" id="loading-text">انتظر قليلاً...</div>
+            </div>
+            
+            <div class="console-placeholder" id="console-placeholder">
+                <h2>🖥️ Console</h2>
+                <p>اضغط "ابدأ المختبر" لتشغيل الأجهزة وفتح واجهة التحكم</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const labId = {{ lab.id }};
+        const labType = "{{ lab.type }}";
+        const consoleType = "{{ lab.console_type }}";
+        const vmIds = {{ vm_ids|tojson }};
+        
+        function showStatus(message, type = 'info') {
+            const statusContainer = document.getElementById('status-container');
+            let className = 'status-box';
+            if (type === 'loading') className += ' loading';
+            if (type === 'error') className += ' error';
+            
+            statusContainer.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+        
+        function showLoading(message) {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            document.getElementById('loading-text').textContent = message;
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+        
+        async function startLab() {
+            showLoading('جارٍ تحضير المختبر...');
+            showStatus('⏳ جارٍ إعادة تهيئة الأجهزة إلى CLEAN_STATE...', 'loading');
+            
+            try {
+                const response = await fetch('/api/start-lab', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        lab_id: labId,
+                        lab_type: labType
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Start Lab Result:', result);
+                
+                if (result.success) {
+                    showStatus('✅ المختبر جاهز! يمكنك البدء الآن', 'success');
+                    
+                    updateVMStatus(vmIds.attacker, 'running');
+                    updateVMStatus(vmIds.victim, 'running');
+                    
+                    await loadConsole();
+                    hideLoading();
+                } else {
+                    showStatus('❌ خطأ: ' + result.message, 'error');
+                    hideLoading();
+                }
+            } catch (error) {
+                console.error('Start Lab Error:', error);
+                showStatus('❌ خطأ في الاتصال: ' + error.message, 'error');
+                hideLoading();
+            }
+        }
+        
+        async function stopLab() {
+            showStatus('⏹️ جارٍ إيقاف المختبر...', 'loading');
+            
+            try {
+                const response = await fetch('/api/stop-lab', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('⏹️ تم إيقاف المختبر', 'info');
+                    updateVMStatus(vmIds.attacker, 'stopped');
+                    updateVMStatus(vmIds.victim, 'stopped');
+                    
+                    document.getElementById('console-placeholder').style.display = 'block';
+                }
+            } catch (error) {
+                showStatus('❌ خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        let consoleWindow = null;
+        
+        async function loadConsole() {
+            try {
+                showStatus('🔄 جارٍ تحميل واجهة التحكم...', 'loading');
+                
+                const response = await fetch('/api/get-console-url', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({type: consoleType})
+                });
+                
+                const result = await response.json();
+                console.log('Console URL Result:', result);
+                
+                if (result.success) {
+                    let consoleUrl;
+                    let consoleName;
+                    
+                    if (result.use_dynamic_host) {
+                        const currentHost = window.location.hostname;
+                        const currentProtocol = window.location.protocol;
+                        
+                        if (result.console_type === 'splunk') {
+                            consoleUrl = `http://${currentHost}:${result.port}`;
+                            consoleName = 'Splunk Dashboard';
+                            console.log('Built Dynamic Splunk URL:', consoleUrl);
+                        } else {
+                            const params = new URLSearchParams({
+                                console: 'kvm',
+                                novnc: '1',
+                                vmid: result.vmid,
+                                vmname: result.vm_name,
+                                node: result.node,
+                                resize: 'scale',
+                                path: result.websocket_path
+                            });
+                            
+                            consoleUrl = `https://${currentHost}:8006/?${params.toString()}`;
+                            consoleName = 'Console (noVNC)';
+                            console.log('Built Dynamic noVNC URL:', consoleUrl);
+                        }
+                    } else if (result.url) {
+                        consoleUrl = result.url;
+                        consoleName = 'Console';
+                        console.log('Using provided URL:', consoleUrl);
+                    } else {
+                        throw new Error('No console URL available');
+                    }
+                    
+                    document.getElementById('console-placeholder').style.display = 'none';
+                    
+                    if (consoleWindow && !consoleWindow.closed) {
+                        consoleWindow.focus();
+                        consoleWindow.location.href = consoleUrl;
+                    } else {
+                        consoleWindow = window.open(
+                            consoleUrl,
+                            'CyberRangeConsole',
+                            'width=1280,height=800,menubar=no,toolbar=no,location=no,status=no'
+                        );
+                    }
+                    
+                    if (consoleWindow) {
+                        showStatus(
+                            `✅ تم فتح ${consoleName} في نافذة منفصلة<br>` +
+                            '<small>إذا لم تفتح النافذة، تأكد من السماح بالنوافذ المنبثقة</small><br>' +
+                            '<button onclick="reopenConsole()" class="btn btn-start" style="margin-top: 10px; padding: 8px 20px;">🔄 إعادة فتح الواجهة</button>',
+                            'success'
+                        );
+                    } else {
+                        showStatus('❌ فشل فتح النافذة. يرجى السماح بالنوافذ المنبثقة', 'error');
+                    }
+                    
+                } else {
+                    showStatus('❌ خطأ: ' + result.message, 'error');
+                    console.error('Console URL Error:', result);
+                }
+            } catch (error) {
+                console.error('Error loading console:', error);
+                showStatus('❌ خطأ في الاتصال: ' + error.message, 'error');
+            }
+        }
+        
+        async function reopenConsole() {
+            await loadConsole();
+        }
+        
+        function updateVMStatus(vmid, status) {
+            const statusElement = document.getElementById(`vm-status-${vmid}`);
+            if (statusElement) {
+                statusElement.textContent = status === 'running' ? 'Running' : 'Stopped';
+                statusElement.className = `vm-status ${status}`;
+            }
+        }
+        
+        setInterval(async () => {
+            try {
+                const response = await fetch(`/api/vm-status/${vmIds.attacker}`);
+                const result = await response.json();
+                if (result.success && result.status) {
+                    updateVMStatus(vmIds.attacker, result.status.status);
+                }
+            } catch (e) {
+                console.error('Error checking VM status:', e);
+            }
+            
+            try {
+                const response = await fetch(`/api/vm-status/${vmIds.victim}`);
+                const result = await response.json();
+                if (result.success && result.status) {
+                    updateVMStatus(vmIds.victim, result.status.status);
+                }
+            } catch (e) {
+                console.error('Error checking VM status:', e);
+            }
+        }, 10000);
+        
+        window.addEventListener('load', function() {
+            showStatus('👋 مرحباً! اضغط "ابدأ المختبر" لبدء التدريب', 'info');
+        });
+    </script>
+</body>
+</html>

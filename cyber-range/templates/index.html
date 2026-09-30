@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Range - مختبر الأمن السيبراني</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .lab-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .lab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .lab-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .lab-type {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .lab-type.red {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .lab-type.blue {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .difficulty {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .lab-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .lab-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .lab-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .duration {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .start-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .start-btn:hover {
+            background: #5568d3;
+        }
+        
+        .dashboard-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .dashboard-link:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <a href="/dashboard" class="dashboard-link">📊 لوحة التحكم</a>
+    
+    <div class="container">
+        <header>
+            <h1>🛡️ Cyber Range Platform</h1>
+            <p class="subtitle">مختبرات تدريبية تفاعلية للأمن السيبراني - Red & Blue Teaming</p>
+        </header>
+        
+    <div class="labs-grid">
+        {% for lab in labs %}
+        <div class="lab-card" onclick="window.location.href='/lab/{{ lab.id }}'">
+            <div class="lab-header">
+                <span class="lab-type {{ lab.type }}">
+                    {% if lab.type == 'red' %}🔴 Red Team{% else %}🔵 Blue Team{% endif %}
+                </span>
+                <span class="difficulty">{{ lab.difficulty }}</span>
+            </div>
+            
+            <h2 class="lab-title">{{ lab.name_ar }}</h2>
+            <p class="lab-description">{{ lab.description }}</p>
+            
+            <div class="lab-info">
+                <span class="duration">⏱️ {{ lab.duration }}</span>
+                <button class="start-btn">ابدأ المختبر</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    </div>
+</body>
+</html>

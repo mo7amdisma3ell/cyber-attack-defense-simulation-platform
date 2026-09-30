@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - Cyber Range</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f23;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            font-size: 2em;
+        }
+        
+        .back-btn {
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .vm-card {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #2e2e4e;
+        }
+        
+        .vm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .vm-name {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .vm-id {
+            background: #667eea;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .vm-info {
+            margin: 15px 0;
+            line-height: 2;
+        }
+        
+        .vm-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #2e2e4e;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        
+        .status-indicator.running {
+            background: #2ecc71;
+            box-shadow: 0 0 10px #2ecc71;
+        }
+        
+        .status-indicator.stopped {
+            background: #e74c3c;
+        }
+        
+        .vm-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-start {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-stop {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-revert {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 لوحة تحكم الأجهزة الافتراضية</h1>
+            <a href="/" class="back-btn">← رجوع للمختبرات</a>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="vm-card">
+                <div class="vm-header">
+                    <div class="vm-name">🖥️ Server (Control Node)</div>
+                    <div class="vm-id">ID: 100</div>
+                </div>
+                <div class="vm-info">
+                    <div class="vm-info-row">
+                        <span>الحالة:</span>
+                        <span id="status-100">
+                            <span class="status-indicator stopped"></span>
+                            Checking...
+                        </span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>IP:</span>
+                        <span>192.168.10.1</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>النظام:</span>
+                        <span>Alpine Linux</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>الدور:</span>
+                        <span>Flask App + Ansible</span>
+                    </div>
+                </div>
+                <div class="vm-actions">
+                    <button class="action-btn btn-start" onclick="startVM(100)">▶️ تشغيل</button>
+                    <button class="action-btn btn-stop" onclick="stopVM(100)">⏹️ إيقاف</button>
+                    <button class="action-btn btn-revert" onclick="revertVM(100)">🔄 إعادة</button>
+                </div>
+            </div>
+            
+            <div class="vm-card">
+                <div class="vm-header">
+                    <div class="vm-name">⚔️ Attacker (Kali)</div>
+                    <div class="vm-id">ID: 101</div>
+                </div>
+                <div class="vm-info">
+                    <div class="vm-info-row">
+                        <span>الحالة:</span>
+                        <span id="status-101">
+                            <span class="status-indicator stopped"></span>
+                            Checking...
+                        </span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>IP:</span>
+                        <span>192.168.10.10</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>النظام:</span>
+                        <span>Kali Linux</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>الدور:</span>
+                        <span>Attacker Node</span>
+                    </div>
+                </div>
+                <div class="vm-actions">
+                    <button class="action-btn btn-start" onclick="startVM(101)">▶️ تشغيل</button>
+                    <button class="action-btn btn-stop" onclick="stopVM(101)">⏹️ إيقاف</button>
+                    <button class="action-btn btn-revert" onclick="revertVM(101)">🔄 إعادة</button>
+                </div>
+            </div>
+            
+            <div class="vm-card">
+                <div class="vm-header">
+                    <div class="vm-name">🎯 Victim (Ubuntu)</div>
+                    <div class="vm-id">ID: 102</div>
+                </div>
+                <div class="vm-info">
+                    <div class="vm-info-row">
+                        <span>الحالة:</span>
+                        <span id="status-102">
+                            <span class="status-indicator stopped"></span>
+                            Checking...
+                        </span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>IP:</span>
+                        <span>192.168.10.20</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>النظام:</span>
+                        <span>Ubuntu + DVWA</span>
+                    </div>
+                    <div class="vm-info-row">
+                        <span>الدور:</span>
+                        <span>Target Node</span>
+                    </div>
+                </div>
+                <div class="vm-actions">
+                    <button class="action-btn btn-start" onclick="startVM(102)">▶️ تشغيل</button>
+                    <button class="action-btn btn-stop" onclick="stopVM(102)">⏹️ إيقاف</button>
+                    <button class="action-btn btn-revert" onclick="revertVM(102)">🔄 إعادة</button>
+                </div>
+            </div>
+        </div>
+        
+        <button class="refresh-btn" onclick="refreshAllStatus()">🔄 تحديث الحالة</button>
+    </div>
+    
+    <script>
+        async function refreshAllStatus() {
+            [100, 101, 102].forEach(vmid => checkVMStatus(vmid));
+        }
+        
+        async function checkVMStatus(vmid) {
+            try {
+                const response = await fetch(`/api/vm-status/${vmid}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const status = result.status.status;
+                    updateStatusDisplay(vmid, status);
+                }
+            } catch (error) {
+                console.error(`Error checking VM ${vmid}:`, error);
+            }
+        }
+        
+        function updateStatusDisplay(vmid, status) {
+            const statusElement = document.getElementById(`status-${vmid}`);
+            const isRunning = status === 'running';
+            
+            statusElement.innerHTML = `
+                <span class="status-indicator ${isRunning ? 'running' : 'stopped'}"></span>
+                ${isRunning ? 'Running' : 'Stopped'}
+            `;
+        }
+        
+        async function startVM(vmid) {
+            alert(`جارٍ تشغيل VM ${vmid}...`);
+            // يمكن إضافة API call هنا
+        }
+        
+        async function stopVM(vmid) {
+            if (confirm(`هل أنت متأكد من إيقاف VM ${vmid}؟`)) {
+                alert(`جارٍ إيقاف VM ${vmid}...`);
+                // يمكن إضافة API call هنا
+            }
+        }
+        
+        async function revertVM(vmid) {
+            if (confirm(`هل تريد إعادة VM ${vmid} إلى CLEAN_STATE؟`)) {
+                alert(`جارٍ إعادة VM ${vmid} إلى CLEAN_STATE...`);
+                // يمكن إضافة API call هنا
+            }
+        }
+        
+        // تحديث تلقائي كل 5 ثواني
+        setInterval(refreshAllStatus, 5000);
+        
+        // تحديث أولي عند تحميل الصفحة
+        refreshAllStatus();
+    </script>
+</body>
+</html>

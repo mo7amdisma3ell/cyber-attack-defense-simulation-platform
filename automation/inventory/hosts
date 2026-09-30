@@ -1,0 +1,12 @@
+[control]
+localhost ansible_connection=local
+
+[attackers]
+kali ansible_host=192.168.10.10 ansible_user=kali ansible_python_interpreter=/usr/bin/python3
+
+[victims]
+ubuntu ansible_host=192.168.10.20 ansible_user=victim ansible_python_interpreter=/usr/bin/python3
+
+[lab_vms:children]
+attackers
+victims

